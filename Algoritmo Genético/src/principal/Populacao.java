@@ -5,6 +5,8 @@
  */
 package principal;
 
+import java.util.Random;
+
 /**
  *
  * @author a1819879
@@ -16,21 +18,37 @@ public class Populacao {
     private Double txCruzamento;
     private Double txSubstituicao;
     private int[][] posicaoY;
-    public Populacao (int tamanhoPopulacao, Double txMutacao, Double txCruzamento, Double txSubstituicao) {
+    private int[][] matrizTabuleiro = new int[8][8];
+
+    public Populacao(int tamanhoPopulacao, Double txMutacao, Double txCruzamento, Double txSubstituicao) {
         this.tamanhoPopulacao = tamanhoPopulacao;
         this.txMutacao = txMutacao;
         this.txCruzamento = txCruzamento;
         this.txSubstituicao = txSubstituicao;
         posicaoY = new int[tamanhoPopulacao][8];
     }
-    public void gerarPopulacao() {
+    //gerando a primeira populacao
+    public void generatePopulation() {
+        Random random = new Random();
+        for (int i = 0; i < tamanhoPopulacao; i++) {
+            for (int j = 0; j < 8; j++) {
+                posicaoY[i][j] = random.nextInt(8);
+            }
+        }
+    }
+    //checar a qualidade dos meus indivíduos gerados
+    public void checkFitness() {
         
     }
-
-    public void selecionarReprodutores() {
+    
+    public void unsetTable() {
 
     }
 
+    public void selectParents() {
+
+    }
+ 
     public void cruzar() {
 
     }

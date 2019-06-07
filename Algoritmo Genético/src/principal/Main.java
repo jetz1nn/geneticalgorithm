@@ -28,6 +28,6 @@ public class Main {
         System.out.println("Inicializando o Algoritmo Genético com uma popu"
                 + "lação de " + populacao.getTamanhoPopulacao() + ""
                 + " indivíduos \n");
-
+        
     }
 }
