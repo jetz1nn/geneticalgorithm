@@ -27,7 +27,7 @@ public class Populacao {
         this.txSubstituicao = txSubstituicao;
         posicaoY = new int[tamanhoPopulacao][8];
     }
-    //gerando a primeira populacao
+
     public void generatePopulation() {
         Random random = new Random();
         for (int i = 0; i < tamanhoPopulacao; i++) {
@@ -36,11 +36,50 @@ public class Populacao {
             }
         }
     }
-    //checar a qualidade dos meus indivíduos gerados
+
     public void checkFitness() {
-        
+        int[] posicoesY = new int[8];
+        for (int i = 0; i < tamanhoPopulacao; i++) {
+            for (int j = 0; j < 8; j++) {
+                matrizTabuleiro[j][posicaoY[i][j]] = 1;
+                posicoesY[j] = posicaoY[i][j];
+            }
+            checkTableFitness(posicoesY);
+        }
     }
-    
+
+    public int checkTableFitness(int[] posicoesY) {
+        for (int i = 0; i < 8; i++) {
+            percorrerLados(posicoesY[i], i);
+        }
+
+//        return fitness;
+    }
+
+    public int percorrerLadoEsquerdo(int posicaoColuna, int linha) {
+        if (linha > 7) {
+            return;
+        }
+        if () {
+            
+        }
+    }
+
+    public void percorrerLadoDireito(int posicaoColuna, int linha) {
+        if (linha < 0) {
+//            return;
+        }
+
+    }
+
+    public void percorrerCima(int posicaoColuna, int linha) {
+
+    }
+
+    public void percorrerDiagonais() {
+
+    }
+
     public void unsetTable() {
 
     }
@@ -48,7 +87,7 @@ public class Populacao {
     public void selectParents() {
 
     }
- 
+
     public void cruzar() {
 
     }
