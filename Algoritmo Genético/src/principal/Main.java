@@ -25,9 +25,12 @@ public class Main {
         System.out.println("Digite a taxa da população a ser substituída: ");
         Double txSubstituicao = scanner.nextDouble();
         Populacao populacao = new Populacao(tamPopulacao, txCruzamento, txMutacao, txSubstituicao);
+//        populacao.
         System.out.println("Inicializando o Algoritmo Genético com uma popu"
                 + "lação de " + populacao.getTamanhoPopulacao() + ""
                 + " indivíduos \n");
+        populacao.generatePopulation();
+        populacao.checkFitness();
         
     }
 }

@@ -20,6 +20,7 @@ public class Populacao {
     private int[][] posicaoY;
     private int[][] matrizTabuleiro = new int[8][8];
     public int [] individuoFitness;
+    
     public Populacao(int tamanhoPopulacao, Double txMutacao, Double txCruzamento, Double txSubstituicao) {
         this.tamanhoPopulacao = tamanhoPopulacao;
         this.txMutacao = txMutacao;
@@ -37,7 +38,7 @@ public class Populacao {
             }
         }
     }
-
+    
     public void checkFitness() {
         int[] posicoesY = new int[8];
         
@@ -52,7 +53,7 @@ public class Populacao {
             individuoFitness[i] = checkTableFitness(posicoesY);
         }
     }
-
+    
     public int checkTableFitness(int[] posicoesY) {
         int colisoes = 0;
         for (int i = 0; i < 8; i++) {
