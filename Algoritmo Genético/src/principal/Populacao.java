@@ -5,7 +5,9 @@
  */
 package principal;
 
+import java.util.Arrays;
 import java.util.Random;
+import java.util.Scanner;
 
 /**
  *
@@ -19,15 +21,36 @@ public class Populacao {
     private Double txSubstituicao;
     private int[][] posicaoY;
     private int[][] matrizTabuleiro = new int[8][8];
-    public int [] individuoFitness;
-    
-    public Populacao(int tamanhoPopulacao, Double txMutacao, Double txCruzamento, Double txSubstituicao) {
+    public int[] individuoFitness;
+    private Integer numeroGeracoes;
+    private Integer[] individuoVitorias;
+    private Integer[] individuoSelecionado;
+    private int tipoSelecao;
+    private int[][] cruzamentos;
+    private int tipoCruzamento;
+    private int quantidadeMaxCruzamentos;
+    private int[] individuoFitnessNovo;
+
+    public Populacao(int tamanhoPopulacao, Double txMutacao, Double txCruzamento, Double txSubstituicao, Integer numeroGeracoes) {
         this.tamanhoPopulacao = tamanhoPopulacao;
         this.txMutacao = txMutacao;
         this.txCruzamento = txCruzamento;
         this.txSubstituicao = txSubstituicao;
+        this.numeroGeracoes = numeroGeracoes;
         posicaoY = new int[tamanhoPopulacao][8];
-        individuoFitness = new int [tamanhoPopulacao];
+        individuoFitness = new int[tamanhoPopulacao];
+        individuoVitorias = new Integer[tamanhoPopulacao];
+
+        tipoSelecao = 0;
+        tipoCruzamento = 0;
+        int resultadoSum = 0;
+
+        for (int i = 1; i < (int) ((tamanhoPopulacao - 1) * txCruzamento); i++) {
+            resultadoSum = resultadoSum + (i * 2);
+        }
+        quantidadeMaxCruzamentos = resultadoSum;
+        cruzamentos = new int[quantidadeMaxCruzamentos][8];
+        individuoFitnessNovo = new int[quantidadeMaxCruzamentos];
     }
 
     public void generatePopulation() {
@@ -38,10 +61,10 @@ public class Populacao {
             }
         }
     }
-    
+
     public void checkFitness() {
         int[] posicoesY = new int[8];
-        
+
         for (int i = 0; i < tamanhoPopulacao; i++) {
             for (int j = 0; j < 8; j++) {
                 // popula o tabuleiro com os valores randomizados
@@ -51,9 +74,27 @@ public class Populacao {
             }
             //fitness de cada indivíduo calculado
             individuoFitness[i] = checkTableFitness(posicoesY);
+            unsetTable();
         }
     }
-    
+
+    public void showGeneration() {
+
+        int bestFitness = Integer.MAX_VALUE;
+
+        for (int i = 0; i < tamanhoPopulacao; i++) {
+
+            if (individuoFitness[i] < bestFitness) {
+                bestFitness = i;
+            }
+
+            System.out.println("Indivíduo " + i + ":" + individuoFitness[i]);
+        }
+
+        System.out.println("Melhor Indivíduo: #" + bestFitness);
+
+    }
+
     public int checkTableFitness(int[] posicoesY) {
         int colisoes = 0;
         for (int i = 0; i < 8; i++) {
@@ -193,23 +234,118 @@ public class Populacao {
     }
 
     public void selectParents() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Metodo de seleção de pais: ");
+        System.out.println("1. Torneio");
+        System.out.println("2. Roleta");
+        while (tipoSelecao == 0) {
+            tipoSelecao = scanner.nextInt();
 
+            switch (tipoSelecao) {
+
+                case 1:
+                    tournament();
+                    break;
+                case 2:
+                    roulette();
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 
     public void cruzar() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Digite o tipo de cruzamento: ");
+        System.out.println("1. Crossover Uniforme");
+        System.out.println("2. Crossover 1 ponto");
 
+        while (tipoCruzamento != 1 && tipoCruzamento != 2) {
+            tipoCruzamento = scanner.nextInt();
+            switch (tipoCruzamento) {
+                case 1:
+                    int cruzamento = 0;
+                    for (int i = 0; i < individuoSelecionado.length; i++) {
+                        uniformCrossover(individuoSelecionado[i], individuoSelecionado[i + 1], cruzamento);
+                        cruzamento = cruzamento + 2;
+                    }
+                    fazerMutacao(cruzamentos);
+                    break;
+                case 2:
+                    crossOver();
+                    break;
+            }
+        }
     }
 
-    public void fazerMutacao() {
+    public void fazerMutacao(int[][] cruzamentos) {
+//        int quantidadeElementosMutacao = (int) (quantidadeMaxCruzamentos * txMutacao);
+//        int[] elementosEscolhidos = new int[quantidadeElementosMutacao];
+//        int numero;
+//        int quantidadeEscolhas = 0;
+//        boolean increment = false;
+        Random random = new Random();
+        double resultado;
 
+        for (int i = 0; i < quantidadeMaxCruzamentos; i++) {
+            for (int j = 0; j < 8; j++) {
+                resultado = (double) random.nextInt() / 100;
+                if (resultado < txCruzamento) {
+                    cruzamentos[i][j] = random.nextInt(8);
+                }
+            }
+//
+//        for (int i = 0; i < quantidadeElementosMutacao; i++) {
+//            numero = random.nextInt();
+//            for (int j = 0; j < quantidadeElementosMutacao; j++) {
+//                if (elementosEscolhidos[j] == numero) {
+//                    increment = false;
+//                    i--;
+//                    break;
+//                }
+//            }
+//            if (increment) {
+//                elementosEscolhidos[i] = i;
+//                quantidadeEscolhas++;
+//                increment = false;
+//            }
+//        }
+//        for (int i = 0; i < quantidadeElementosMutacao; i++) {
+//            for (int j = 0; j < 8; j++) {
+//                
+//            }
+//        }
+
+        }
+        avaliarResultado();
     }
 
     public void avaliarResultado() {
-
+        unsetTable();
+        int[] posicoesY = new int[8];
+        for (int i = 0; i < quantidadeMaxCruzamentos; i++) {
+            for (int j = 0; j < 8; j++) {
+                // popula o tabuleiro com os valores randomizados
+                matrizTabuleiro[j][posicaoY[i][j]] = 1;
+                // guardado os valores os quais 
+                posicoesY[j] = cruzamentos[i][j];
+            }
+            //fitness de cada indivíduo calculado
+            individuoFitnessNovo[i] = checkTableFitness(posicoesY);
+            unsetTable();
+        }
     }
-
+    
     public void atualizarPopulacao() {
-
+//        Arrays.sort(individuoFitness);
+        
+        for (int i = 0; i < tamanhoPopulacao; i++) {
+            
+            for (int j = 0; j < 8; j++) {
+                
+            }
+        }
     }
 
     /**
@@ -282,4 +418,67 @@ public class Populacao {
         this.posicaoY = posicaoY;
     }
 
+    public void tournament() {
+        for (int i = 0; i < tamanhoPopulacao; i++) {
+            for (int j = i + 1; j < tamanhoPopulacao; j++) {
+                if (individuoFitness[i] < individuoFitness[j]) {
+                    individuoVitorias[i]++;
+                } else {
+                    individuoVitorias[j]++;
+                }
+            }
+        }
+    }
+
+    public void roulette() {
+        int soma = 0;
+        int i;
+        int quantidadeSelecionados = (int) (tamanhoPopulacao * txCruzamento);
+        for (i = 0; i < tamanhoPopulacao; i++) {
+            soma = soma + individuoFitness[i];
+        }
+        int selecionados = 0;
+        i = 1;
+        Random random = new Random();
+        int s;
+        int aux;
+        while (selecionados < quantidadeSelecionados) {
+            s = random.nextInt(soma);
+            aux = individuoFitness[0];
+            while (aux < s) {
+                aux = aux + individuoFitness[i];
+                i++;
+            }
+            individuoSelecionado[selecionados] = i;
+            i = 1;
+        }
+    }
+
+    public void uniformCrossover(int pai, int pai2, int cruzamento) {
+        Random random = new Random(2);
+        int resultado;
+
+        //filho 1
+        for (int i = 0; i < 8; i++) {
+            resultado = random.nextInt();
+            if (resultado == 0) {
+                cruzamentos[cruzamento][i] = posicaoY[individuoSelecionado[pai]][i];
+            } else {
+                cruzamentos[cruzamento][i] = posicaoY[individuoSelecionado[pai2]][i];
+            }
+        }
+        //filho 2
+        for (int i = 0; i < 8; i++) {
+            resultado = random.nextInt();
+            if (resultado == 0) {
+                cruzamentos[cruzamento + 1][i] = posicaoY[individuoSelecionado[pai]][i];
+            } else {
+                cruzamentos[cruzamento + 1][i] = posicaoY[individuoSelecionado[pai2]][i];
+            }
+        }
+    }
+
+    public void crossOver() {
+
+    }
 }

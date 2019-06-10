@@ -24,13 +24,24 @@ public class Main {
         Double txMutacao = scanner.nextDouble();
         System.out.println("Digite a taxa da população a ser substituída: ");
         Double txSubstituicao = scanner.nextDouble();
-        Populacao populacao = new Populacao(tamPopulacao, txCruzamento, txMutacao, txSubstituicao);
+        System.out.println("Digite o número de gerações:");
+        int numeroGeracoes = scanner.nextInt();
+        Populacao populacao = new Populacao(tamPopulacao, txCruzamento, txMutacao, txSubstituicao, numeroGeracoes);
 //        populacao.
         System.out.println("Inicializando o Algoritmo Genético com uma popu"
                 + "lação de " + populacao.getTamanhoPopulacao() + ""
                 + " indivíduos \n");
         populacao.generatePopulation();
         populacao.checkFitness();
-        
+        int i = 1;
+        while (i < numeroGeracoes) {
+            System.out.println("-----------------------------");
+            System.out.println("Geração #" + i);
+            populacao.showGeneration();
+            populacao.cruzar();
+//            populacao.fazerMutacao();
+            populacao.avaliarResultado();
+        }
+
     }
 }
