@@ -33,15 +33,16 @@ public class Main {
                 + " indivíduos \n");
         populacao.generatePopulation();
         populacao.checkFitness();
+        populacao.showGeneration();
         int i = 1;
-        while (i < numeroGeracoes) {
-            System.out.println("-----------------------------");
-            System.out.println("Geração #" + i);
-            populacao.showGeneration();
-            populacao.cruzar();
-//            populacao.fazerMutacao();
-            populacao.avaliarResultado();
-        }
+//        while (wwi < numeroGeracoes) {
+//            System.out.println("-----------------------------");
+//            System.out.println("Geração #" + i);
+//            populacao.showGeneration();
+//            populacao.cruzar();
+////            populacao.fazerMutacao();
+//            populacao.avaliarResultado();
+//        }
 
     }
 }

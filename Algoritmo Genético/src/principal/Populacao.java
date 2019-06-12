@@ -45,7 +45,7 @@ public class Populacao {
         tipoCruzamento = 0;
         int resultadoSum = 0;
 
-        for (int i = 1; i < (int) ((tamanhoPopulacao - 1) * txCruzamento); i++) {
+        for (int i = 1; i < (int) ((int) (tamanhoPopulacao * txCruzamento) - 1); i++) {
             resultadoSum = resultadoSum + (i * 2);
         }
         quantidadeMaxCruzamentos = resultadoSum;
@@ -81,18 +81,39 @@ public class Populacao {
     public void showGeneration() {
 
         int bestFitness = Integer.MAX_VALUE;
-
+//        int valueFitness; 
+        int individuo = 0;
         for (int i = 0; i < tamanhoPopulacao; i++) {
-
-            if (individuoFitness[i] < bestFitness) {
-                bestFitness = i;
+//            valueFitness = individuoFitness[i];
+            if (bestFitness > individuoFitness[i]) {
+                bestFitness = individuoFitness[i];
+                individuo = i;
             }
 
             System.out.println("Indivíduo " + i + ":" + individuoFitness[i]);
         }
 
-        System.out.println("Melhor Indivíduo: #" + bestFitness);
+        System.out.println("Melhor Indivíduo: #" + individuo);
+        printTable(individuo);
+    }
 
+    public void printTable(int individuo) {
+        for (int i = 0; i < 8; i++) {
+            matrizTabuleiro[i][posicaoY[individuo][i]] = 1;
+        }
+
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                System.out.print('|');
+                if (matrizTabuleiro[i][j] == 1) {
+                    System.out.print('X');
+                } else {
+                    System.out.print(' ');
+                }
+                System.out.print('|');
+            }
+            System.out.println("\n");
+        }
     }
 
     public int checkTableFitness(int[] posicoesY) {
@@ -130,7 +151,7 @@ public class Populacao {
         int valor = linha;
         while (valor > 0) {
             valor--;
-            if (matrizTabuleiro[linha][posicaoColuna] == 1) {
+            if (matrizTabuleiro[valor][posicaoColuna] == 1) {
                 return true;
             }
         }
@@ -141,7 +162,7 @@ public class Populacao {
         int valor = linha;
         while (valor < 7) {
             valor++;
-            if (matrizTabuleiro[linha][posicaoColuna] == 1) {
+            if (matrizTabuleiro[valor][posicaoColuna] == 1) {
                 return true;
             }
         }
@@ -152,7 +173,7 @@ public class Populacao {
         int valor = posicaoColuna;
         while (valor < 7) {
             valor++;
-            if (matrizTabuleiro[linha][posicaoColuna] == 1) {
+            if (matrizTabuleiro[linha][valor] == 1) {
                 return true;
             }
         }
@@ -163,7 +184,7 @@ public class Populacao {
         int valor = posicaoColuna;
         while (valor > 0) {
             valor--;
-            if (matrizTabuleiro[linha][posicaoColuna] == 1) {
+            if (matrizTabuleiro[linha][valor] == 1) {
                 return true;
             }
         }
@@ -177,7 +198,7 @@ public class Populacao {
         while (valor < 7 && valor2 < 0) {
             valor++;
             valor2--;
-            if (matrizTabuleiro[linha][posicaoColuna] == 1) {
+            if (matrizTabuleiro[valor2][valor] == 1) {
                 return true;
             }
         }
@@ -191,7 +212,7 @@ public class Populacao {
         while (valor > 0 && valor2 > 0) {
             valor--;
             valor2--;
-            if (matrizTabuleiro[linha][posicaoColuna] == 1) {
+            if (matrizTabuleiro[valor2][valor] == 1) {
                 return true;
             }
         }
@@ -205,7 +226,7 @@ public class Populacao {
         while (valor < 7 && valor2 < 7) {
             valor++;
             valor2++;
-            if (matrizTabuleiro[linha][posicaoColuna] == 1) {
+            if (matrizTabuleiro[valor2][valor] == 1) {
                 return true;
             }
         }
@@ -218,7 +239,7 @@ public class Populacao {
         while (valor > 0 && valor2 < 7) {
             valor--;
             valor2++;
-            if (matrizTabuleiro[linha][posicaoColuna] == 1) {
+            if (matrizTabuleiro[valor2][valor] == 1) {
                 return true;
             }
         }
@@ -336,14 +357,14 @@ public class Populacao {
             unsetTable();
         }
     }
-    
+
     public void atualizarPopulacao() {
 //        Arrays.sort(individuoFitness);
-        
+
         for (int i = 0; i < tamanhoPopulacao; i++) {
-            
+
             for (int j = 0; j < 8; j++) {
-                
+
             }
         }
     }
