@@ -34,7 +34,18 @@ public class Main {
         populacao.generatePopulation();
         populacao.checkFitness();
         populacao.showGeneration();
-        populacao.cruzar();
+        int nVezes = 0 ;
+        while (!populacao.isAchouSolucao() && nVezes < populacao.getNumeroGeracoes()) {
+            
+            populacao.selectParents();
+            populacao.cruzar();
+            populacao.avaliarResultado();
+            populacao.atualizarPopulacao();
+            populacao.checkFitness();
+            populacao.showGeneration();
+            System.out.println("\n" + nVezes);
+            nVezes++;
+        }
         int i = 1;
 //        while (wwi < numeroGeracoes) {
 //            System.out.println("-----------------------------");

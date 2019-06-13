@@ -22,30 +22,32 @@ public class Populacao {
     private int[][] posicaoY;
     private int[][] matrizTabuleiro = new int[8][8];
     public int[] individuoFitness;
-    private Integer numeroGeracoes;
-    private Integer[] individuoVitorias;
-    private Integer[] individuoSelecionado;
+    private int numeroGeracoes;
+    private int[] individuoVitorias;
+    private int[] individuoSelecionado;
     private int tipoSelecao;
     private int[][] cruzamentos;
     private int tipoCruzamento;
     private int quantidadeMaxCruzamentos;
     private int[] individuoFitnessNovo;
-
+    private int[][] novaPopulacao;
+    private boolean achouSolucao;
+    
     public Populacao(int tamanhoPopulacao, Double txMutacao, Double txCruzamento, Double txSubstituicao, Integer numeroGeracoes) {
         this.tamanhoPopulacao = tamanhoPopulacao;
         this.txMutacao = txMutacao;
         this.txCruzamento = txCruzamento;
         this.txSubstituicao = txSubstituicao;
         this.numeroGeracoes = numeroGeracoes;
+        novaPopulacao = new int[tamanhoPopulacao][8];
         posicaoY = new int[tamanhoPopulacao][8];
         individuoFitness = new int[tamanhoPopulacao];
-        individuoVitorias = new Integer[tamanhoPopulacao];
-
+        this.individuoVitorias = new int[tamanhoPopulacao];
+        this.individuoSelecionado = new int[(int) (tamanhoPopulacao * txCruzamento)];
         tipoSelecao = 0;
         tipoCruzamento = 0;
         int resultadoSum = 0;
-
-        for (int i = 1; i < (int) ((int) (tamanhoPopulacao * txCruzamento) - 1); i++) {
+        for (int i = 0; i < (int) (tamanhoPopulacao * txCruzamento); i++) {
             resultadoSum = resultadoSum + (i * 2);
         }
         quantidadeMaxCruzamentos = resultadoSum;
@@ -88,14 +90,16 @@ public class Populacao {
                 individuo = i;
             }
 
-//            System.out.println("Indivíduo " + i + ":" + individuoFitness[i]);
-//            if (individuoFitness[i] == 0) {
-//                printTable(individuo);
-//            }
+            System.out.println("Indivíduo " + i + ":" + individuoFitness[i]);
+            if (individuoFitness[i] == 0) {
+                achouSolucao = true;
+                printTable(individuo);
+            }
         }
 
-//        System.out.println("Melhor Indivíduo: #" + individuo);
-//        printTable(individuo);
+        System.out.println("Melhor Indivíduo: #" + individuo);
+        printTable(individuo);
+        numeroGeracoes++;
     }
 
     public void printTable(int individuo) {
@@ -288,7 +292,7 @@ public class Populacao {
             switch (tipoCruzamento) {
                 case 1:
                     int cruzamento = 0;
-                    for (int i = 0; i < individuoSelecionado.length; i++) {
+                    for (int i = 0; i < individuoSelecionado.length - 1; i++) {
                         uniformCrossover(individuoSelecionado[i], individuoSelecionado[i + 1], cruzamento);
                         cruzamento = cruzamento + 2;
                     }
@@ -349,7 +353,7 @@ public class Populacao {
         for (int i = 0; i < quantidadeMaxCruzamentos; i++) {
             for (int j = 0; j < 8; j++) {
                 // popula o tabuleiro com os valores randomizados
-                matrizTabuleiro[j][posicaoY[i][j]] = 1;
+                matrizTabuleiro[j][cruzamentos[i][j]] = 1;
                 // guardado os valores os quais 
                 posicoesY[j] = cruzamentos[i][j];
             }
@@ -361,17 +365,76 @@ public class Populacao {
     }
 
     public void atualizarPopulacao() {
-        int[] melhoresIndividuosFilhos = new int[(int) (tamanhoPopulacao * txSubstituicao)];
+        //pegar os melhores individuos provindos dos cruzamentos
+        boolean darContinue = false;
+        int[] melhoresIndividuos = new int[(int) (tamanhoPopulacao * txSubstituicao)];
         for (int i = 0; i < tamanhoPopulacao * txSubstituicao; i++) {
-            melhoresIndividuosFilhos[i] = -1;
+            melhoresIndividuos[i] = Integer.MAX_VALUE;
             for (int j = 0; j < quantidadeMaxCruzamentos; j++) {
-                for (int k = j + 1; k < quantidadeMaxCruzamentos; k++) {
-                    if (individuoFitnessNovo[j] > individuoFitness[k]) {
-                        
+                for (int k = 0; k < tamanhoPopulacao * txSubstituicao; k++) {
+                    if (melhoresIndividuos[k] == j) {
+                        darContinue = true;
+                        break;
                     }
+
                 }
+                //para nao pegar os mesmo individuos
+                if (darContinue) {
+                    darContinue = false;
+                    continue;
+                }
+                if (melhoresIndividuos[i] >= individuoFitnessNovo[j]) {
+                    melhoresIndividuos[i] = j;
+                }
+
             }
         }
+
+        for (int i = 0; i < tamanhoPopulacao * txCruzamento; i++) {
+            for (int j = 0; j < 8; j++) {
+                novaPopulacao[i][j] = cruzamentos[melhoresIndividuos[i]][j];
+                posicaoY[i][j] = novaPopulacao[i][j];
+            }
+        }
+        int[] melhoresIndividuosGeracaoAnterior = new int[tamanhoPopulacao - (int) (tamanhoPopulacao * txCruzamento)];
+        darContinue = false;
+        switch (tipoSelecao) {
+            case 1:
+                for (int i = 0; i < (tamanhoPopulacao - (int) (tamanhoPopulacao * txCruzamento)); i++) {
+                    melhoresIndividuosGeracaoAnterior[i] = Integer.MIN_VALUE;
+                    for (int j = 0; j < tamanhoPopulacao; j++) {
+
+                        for (int k = 0; k < (tamanhoPopulacao - (int) (tamanhoPopulacao * txCruzamento)); k++) {
+                            if (melhoresIndividuosGeracaoAnterior[k] == j) {
+                                darContinue = true;
+                                break;
+                            }
+
+                        }
+                        //para nao pegar os mesmo indivíduos
+                        if (darContinue) {
+                            darContinue = false;
+                            continue;
+                        }
+                        //pega os individuos com o maior numero de vitorias
+                        if (melhoresIndividuosGeracaoAnterior[i] <= individuoVitorias[j]) {
+                            melhoresIndividuosGeracaoAnterior[i] = j;
+                        }
+                    }
+
+                }
+                for (int i = (int) (tamanhoPopulacao * txCruzamento); i < tamanhoPopulacao; i++) {
+                    for (int j = 0; j < 8; j++) {
+                        novaPopulacao[i][j] = cruzamentos[melhoresIndividuosGeracaoAnterior[i - ((int) (tamanhoPopulacao * txCruzamento))]][j];
+                        posicaoY[i][j] = novaPopulacao[i][j];
+                    }
+                }
+                break;
+            case 2:
+                break;
+
+        }
+
     }
 
     /**
@@ -454,6 +517,14 @@ public class Populacao {
                 }
             }
         }
+        int selecionados = 0;
+//        while (selecionados < (int) (tamanhoPopulacao * txCruzamento)) {
+//            for (int i = 0; i < tamanhoPopulacao * txCruzamento; i++) {
+//                if () {
+//                    individuoSelecionado[selecionados]
+//                }
+//            }
+//        }
     }
 
     public void roulette() {
@@ -476,6 +547,7 @@ public class Populacao {
                 i++;
             }
             individuoSelecionado[selecionados] = i;
+            selecionados++;
             i = 1;
         }
     }
@@ -506,5 +578,26 @@ public class Populacao {
 
     public void crossOver() {
 
+    }
+
+    /**
+     * @return the achouSolucao
+     */
+    public boolean isAchouSolucao() {
+        return achouSolucao;
+    }
+
+    /**
+     * @param achouSolucao the achouSolucao to set
+     */
+    public void setAchouSolucao(boolean achouSolucao) {
+        this.achouSolucao = achouSolucao;
+    }
+
+    /**
+     * @return the numeroGeracoes
+     */
+    public int getNumeroGeracoes() {
+        return numeroGeracoes;
     }
 }
