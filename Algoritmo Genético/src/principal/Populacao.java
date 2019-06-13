@@ -81,20 +81,21 @@ public class Populacao {
     public void showGeneration() {
 
         int bestFitness = Integer.MAX_VALUE;
-//        int valueFitness; 
         int individuo = 0;
         for (int i = 0; i < tamanhoPopulacao; i++) {
-//            valueFitness = individuoFitness[i];
             if (bestFitness > individuoFitness[i]) {
                 bestFitness = individuoFitness[i];
                 individuo = i;
             }
 
-            System.out.println("Indivíduo " + i + ":" + individuoFitness[i]);
+//            System.out.println("Indivíduo " + i + ":" + individuoFitness[i]);
+//            if (individuoFitness[i] == 0) {
+//                printTable(individuo);
+//            }
         }
 
-        System.out.println("Melhor Indivíduo: #" + individuo);
-        printTable(individuo);
+//        System.out.println("Melhor Indivíduo: #" + individuo);
+//        printTable(individuo);
     }
 
     public void printTable(int individuo) {
@@ -104,7 +105,7 @@ public class Populacao {
 
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
-                System.out.print('|');
+//                System.out.print('|');
                 if (matrizTabuleiro[i][j] == 1) {
                     System.out.print('X');
                 } else {
@@ -112,7 +113,7 @@ public class Populacao {
                 }
                 System.out.print('|');
             }
-            System.out.println("\n");
+            System.out.print("\n");
         }
     }
 
@@ -128,7 +129,7 @@ public class Populacao {
             if (percorrerCima(posicoesY[i], i)) {
                 colisoes++;
             }
-            if (percorrerCima(posicoesY[i], i)) {
+            if (percorrerBaixo(posicoesY[i], i)) {
                 colisoes++;
             }
             if (percorrerDiagonalSobeDireita(posicoesY[i], i)) {
@@ -312,7 +313,7 @@ public class Populacao {
         for (int i = 0; i < quantidadeMaxCruzamentos; i++) {
             for (int j = 0; j < 8; j++) {
                 resultado = (double) random.nextInt() / 100;
-                if (resultado < txCruzamento) {
+                if (resultado < txMutacao) {
                     cruzamentos[i][j] = random.nextInt(8);
                 }
             }
@@ -356,15 +357,19 @@ public class Populacao {
             individuoFitnessNovo[i] = checkTableFitness(posicoesY);
             unsetTable();
         }
+
     }
 
     public void atualizarPopulacao() {
-//        Arrays.sort(individuoFitness);
-
-        for (int i = 0; i < tamanhoPopulacao; i++) {
-
-            for (int j = 0; j < 8; j++) {
-
+        int[] melhoresIndividuosFilhos = new int[(int) (tamanhoPopulacao * txSubstituicao)];
+        for (int i = 0; i < tamanhoPopulacao * txSubstituicao; i++) {
+            melhoresIndividuosFilhos[i] = -1;
+            for (int j = 0; j < quantidadeMaxCruzamentos; j++) {
+                for (int k = j + 1; k < quantidadeMaxCruzamentos; k++) {
+                    if (individuoFitnessNovo[j] > individuoFitness[k]) {
+                        
+                    }
+                }
             }
         }
     }

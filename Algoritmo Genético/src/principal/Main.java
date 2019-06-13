@@ -34,13 +34,14 @@ public class Main {
         populacao.generatePopulation();
         populacao.checkFitness();
         populacao.showGeneration();
+        populacao.cruzar();
         int i = 1;
 //        while (wwi < numeroGeracoes) {
 //            System.out.println("-----------------------------");
 //            System.out.println("Geração #" + i);
 //            populacao.showGeneration();
 //            populacao.cruzar();
-////            populacao.fazerMutacao();
+////            populacao.fazerMutacao(); 
 //            populacao.avaliarResultado();
 //        }
 
